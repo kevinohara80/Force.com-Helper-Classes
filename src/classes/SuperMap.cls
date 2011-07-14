@@ -93,12 +93,3 @@ global class SuperMap {
 	
 
 }
-
-SuperMap mySuperMap = newSuperMap();
-
-mySuperMap.put('mykey', new Lead());
-
-Boolean test = mySuperMap.containsKey('mykey');
-
-Lead fetchedLead = (Lead) mySuperMap.get('mykey');
-
