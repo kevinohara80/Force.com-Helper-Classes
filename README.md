@@ -61,7 +61,20 @@ myState = StateFormatter.getState(myState).statename;
   
 ### SuperMap.cls
   
-I created this class to help circumvent the 1000 element maximum in Map collections.  It's not a wonderful solution, but until parameterization is allowed in Apex, this is a decent workaround.  
+I created this class to help circumvent the 1000 element maximum in Map collections.  It's not a wonderful solution, but until parameterization is allowed in Apex, this is a decent workaround.
+
+Usage:
+
+```java
+SuperMap mySuperMap = new SuperMap();
+
+for(Integer i=1; i<=10000; i++) {
+  mySuperMap.put(String.valueOf(i), 'value' + String.valueOf(i));
+}
+
+// remember to cast as the supermap stores generic objects
+String val = (String) mySuperMap.get('10000');
+```  
 
 ## Contributors
 

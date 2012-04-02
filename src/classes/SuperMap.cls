@@ -57,7 +57,6 @@ global class SuperMap {
 		for(Map<String, Object> currentMap : mapList) {
 			if(currentMap.containsKey(key)) {
 				return currentMap.get(key);
-				break;
 			}
 		}
 		
