@@ -1,0 +1,5 @@
+.settings
+.project
+salesforce.schema
+src/classes/*.cls-meta.xml
+
