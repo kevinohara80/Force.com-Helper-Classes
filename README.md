@@ -16,6 +16,23 @@ You should contribute...
 
 ## Helper Classes
 
+### Async.cls
+
+The Async class aims to circumvent a limitation of asynchronous (@future) methods in Salesforce. The current @future implementation will only allow for primitives or collections of primitives to be passed into an @future method. The Async class uses native JSON serialization/deserialization to allow for passing an SObject, or List<SObject> into an asynchronous method for DML operations. A helper method is also included for making the serialization processes simpler.
+
+Usage:
+
+```java
+List<Lead> leads = [SELECT Id, FirstName, LastName FROM Lead LIMIT 10];
+  
+for(Lead l : leads) {
+  l.FirstName = 'Somethingelse';
+}
+
+// this will update asynchronously
+Async.updateSObjects(Async.prepare(leads));
+```
+
 ### InvokeUpdateTriggerBatch.cls 
 
 I find myself needing to run mass-updates on records once I finish an "On Update" trigger. I created this simple utility batch class that runs an update on all records retrieved by a SOQL query string that is supplied as the classes only argument. There is a static method that will run this in one line.
