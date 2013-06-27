@@ -32,48 +32,31 @@ public class SearchHelper
                         PHONE_FIELDS, 
                         SIDEBAR_FIELDS }
     private Scope currentScope;
-    private Map<String,List<SObject>> resultMap;
-    private List<String> searchObjects;
-    private String error;
     private Map<String,Map<String,String>> objects;
+    private Map<String,List<SObject>> resultMap;
+    private String error;
     
-
-    public SearchHelper() { }
-
+      
+    /*
+     # Public Methods
+     ======================================================================= */
+    
+    
     /**
+     * @param scope  setter for the search scope. 
      *
-     *
+     * This is the set of fields searched by the sosl query. 
      *
     **/
     public void setSearchScope( Scope scope )
     {
         currentScope = scope;
     }
-
+    
     /**
+     *  @param  searchObjects  a list of SObject Type names.
      *
-     *
-     *
-    **/
-    public String getSearchScope()
-    {        
-        if( currentScope == SCOPE.ALL_FIELDS )
-            return 'ALL FIELDS';
-        else if( currentScope == SCOPE.NAME_FIELDS )
-            return 'NAME FIELDS';
-        else if( currentScope == SCOPE.EMAIL_FIELDS )
-            return 'EMAIL FIELDS';
-        else if( currentScope == SCOPE.PHONE_FIELDS )
-            return 'PHONE FIELDS';
-        else if( currentScope == SCOPE.SIDEBAR_FIELDS )
-            return 'SIDEBAR FIELDS';
-        else 
-            return '';
-    }
-
-    /**
-     *
-     *
+     *  Sets the objects that will be queried.
      *
     **/
     public void setSearchObjects( List<String> searchObjects )
@@ -89,10 +72,13 @@ public class SearchHelper
             objects.put( s, options );
         }
     }
-
+    
     /**
+     *  @param  objectName  an SObject Type name
+     *  @param  fields      a list of field names
      *
-     *
+     *  Set the fields that will be returned in the search query for the 
+     *  given object.
      *
     **/
     public void setFieldsForObject( String objectName, List<String> fields )
@@ -110,10 +96,13 @@ public class SearchHelper
         options.put( 'fields', fieldStr.substring(1) );
         objects.put(objectName, options);
     }
-
+    
     /**
+     *  @param  objectName  an SObject Type name
+     *  @param  lmt         an integer
      *
-     *
+     * Set the number of records to limit the search results for the given
+     * object.
      *
     **/
     public void setLimitForObject( String objectName, Integer lmt )
@@ -124,8 +113,10 @@ public class SearchHelper
     }
 
     /**
+     *  @param  objectName  an SObject Type name
+     *  @param  condition   filters for a Where clause
      *
-     *
+     *  Set the WHERE clause of a sosl search for the given object.
      *
     **/
     public void setConditionForObject( String objectName, String condition )
@@ -134,41 +125,22 @@ public class SearchHelper
         options.put( 'where', 'WHERE ' + condition );
         objects.put(objectName, options);
     }
-
+    
     /**
-     *
-     *
+     *  @return  a Set that contains the SObject types that will be queried.
      *
     **/
-    public List<String> getSearchObjects()
+    public Set<String> getSearchObjects()
     {
-        return searchObjects;
+        return objects.keySet();
     }
-
+    
     /**
+     *  @param   searchTerm  the word or phrase to be searched.
+     *  @return  true if the query executes, false if there's an error.
      *
-     *
-     *
-    **/
-    private String getSearchObjectsAsString()
-    {
-        String objectString = '';
-
-        for( String s : objects.keySet() )
-        {
-            objectString += String.format( ',{0} ({1} {2} {3})',
-                                new List<String> {s
-                                   ,objects.get(s).get('fields')
-                                   ,objects.get(s).get('where')
-                                   ,objects.get(s).get('limit') });
-        }
-
-        return objectString.substring(1);
-    }
-
-    /**
-     *
-     *
+     *  This method executes the SOSL search and updates the internal state
+     *  with the results ( or error ).
      *
     **/
     public Boolean find( String searchTerm )
@@ -197,10 +169,10 @@ public class SearchHelper
 
         return true;
     }
-
+    
     /**
-     *
-     *
+     *  @param   objectName  an SObject Type name
+     *  @return  a list of SObjects that were returned in the search.
      *
     **/
     public List<SObject> getResultsForObject( String objectName )
@@ -209,28 +181,16 @@ public class SearchHelper
     }
 
     /**
-     *
-     *
+     *  @return  a list of all SObject lists that were returned in the query.
      *
     **/
     public Map<String,List<SObject>> getResults()
     {
         return resultMap;
     }
-
+    
     /**
-     *
-     *
-     *
-    **/
-    private void setError( String error )
-    {
-        this.error = error;
-    }
-
-    /**
-     *
-     *
+     *  @return  an error message, or the empty string if no error occurred.
      *
     **/
     public String getError()
@@ -239,6 +199,61 @@ public class SearchHelper
             return '';
         else
             return error;
+    }
+    
+    
+   /*
+    # Private Methods 
+    ======================================================================== */
+    
+    /**
+     *  @return  a string representation of the search scope.
+     *
+    **/
+    private String getSearchScope()
+    {        
+        if( currentScope == SCOPE.ALL_FIELDS )
+            return 'ALL FIELDS';
+        else if( currentScope == SCOPE.NAME_FIELDS )
+            return 'NAME FIELDS';
+        else if( currentScope == SCOPE.EMAIL_FIELDS )
+            return 'EMAIL FIELDS';
+        else if( currentScope == SCOPE.PHONE_FIELDS )
+            return 'PHONE FIELDS';
+        else if( currentScope == SCOPE.SIDEBAR_FIELDS )
+            return 'SIDEBAR FIELDS';
+        else 
+            return '';
+    }
+
+    /**
+     *  @return  a String used in the sosl query to list the objects and their 
+     *           options. 
+     *
+    **/
+    private String getSearchObjectsAsString()
+    {
+        String objectString = '';
+
+        for( String s : objects.keySet() )
+        {
+            objectString += String.format( ',{0} ({1} {2} {3})',
+                                new List<String> {s
+                                   ,objects.get(s).get('fields')
+                                   ,objects.get(s).get('where')
+                                   ,objects.get(s).get('limit') });
+        }
+
+        return objectString.substring(1);
+    }
+
+    /**
+     *  @param  error  an error message.
+     *
+    **/
+    private void setError( String error )
+    {
+        this.error = error;
     }
 
 }
