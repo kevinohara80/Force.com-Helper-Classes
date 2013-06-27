@@ -35,12 +35,12 @@ public class SearchHelper_Test
 		Map<String,List<SObject>> allResults = sosl.getResults();
 		
 		// assert results are correct
-		System.assertEquals( 1, acctResults.size() );
+	    System.assertEquals( 1, acctResults.size() );
         System.assertEquals( 1, contResults.size() );
         System.assertEquals( 1, allResults.get('Account').size() );
         System.assertEquals( 1, allResults.get('Contact').size() );
-		System.assertEquals( 2, sosl.getSearchObjects().size() );
-		System.assertEquals( '', sosl.getError() );
+	    System.assertEquals( 2, sosl.getSearchObjects().size() );
+	    System.assertEquals( '', sosl.getError() );
 	}
 
 }
