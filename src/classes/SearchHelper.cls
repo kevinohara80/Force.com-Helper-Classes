@@ -1,23 +1,28 @@
 /**
+ *  The SearchHelper is a convenience utility that makes constructing SOSL
+ *  queries easier and less prone to errors.  It supports searching multiple 
+ *  SObjects and includes support for adding Fields, Where clauses, and Limits.
+ *  Search results are easily accessed by object.
+ *  
+ *  EXAMPLE USAGE
+ *  
+ *  SearchHelper sosl = new SearchHelper();
  *
  *
  *
- *
- *
- *
- *
+ * 
 **/
 
 public class SearchHelper
 {
-    private final Set<String> scopes 
-        = new Set<String>{'ALL FIELDS'
-                         ,'NAME FIELDS' 
-                         ,'EMAIL FIELDS' 
-                         ,'PHONE FIELDS' 
-                         ,'SIDEBAR FIELDS'};
+    public enum SCOPE { ALL_FIELDS, 
+                        NAME_FIELDS, 
+                        EMAIL_FIELDS,
+                        PHONE_FIELDS, 
+                        SIDEBAR_FIELDS }
+    private SCOPE currentScope;
+
     private Map<String,List<SObject>> resultMap;
-    private String searchScope;
     private List<String> searchObjects;
     private String error;
     private Map<String,Map<String,String>> objects;
@@ -31,13 +36,9 @@ public class SearchHelper
      *
      *
     **/
-    public void setSearchScope( String searchScope )
+    public void setSearchScope( SCOPE scope )
     {
-        if( scopes.contains(searchScope.toUpperCase()) ) {
-            this.searchScope = searchScope;
-        } else {
-            searchScope = 'ALL FIELDS';
-        }
+        currentScope = scope;
     }
 
     /**
@@ -45,12 +46,20 @@ public class SearchHelper
      *
      *
     **/
-    public String getSearchScope()
-    {
-        if( searchScope == null || searchScope == '' )
+    public SCOPE getSearchScope()
+    {        
+        if( currentScope == SCOPE.ALL_FIELDS )
             return 'ALL FIELDS';
-        else
-            return searchScope;
+        else if( currentScope == SCOPE.NAME_FIELDS )
+            return 'NAME FIELDS';
+        else if( currentScope == SCOPE.EMAIL_FIELDS )
+            return 'EMAIL FIELDS';
+        else if( currentScope == SCOPE.PHONE_FIELDS )
+            return 'PHONE FIELDS';
+        else if( currentScope == SCOPE.SIDEBAR_FIELDS )
+            return 'SIDEBAR FIELDS';
+        else 
+            return '';
     }
 
     /**
