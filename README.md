@@ -76,7 +76,34 @@ for(Integer i=1; i<=10000; i++) {
 String val = (String) mySuperMap.get('10000');
 ```  
 
+### SearchHelper.cls
+
+SearchHelper is a convenience utility that makes constructing SOSL
+queries easier and less prone to errors.  It supports searching multiple 
+SObjects and includes support for adding Fields, Where clauses, and Limits.
+Search results are easily accessed by object.
+
+EXAMPLE USAGE:
+
+```java
+SearchHelper sosl = new SearchHelper();
+sosl.setSearchScope( SearchHelper.Scope.ALL_FIELDS );
+sosl.setSearchObjects( new List<String>{ 'Account', 'Contact' } );
+  
+// set Account options
+sosl.setFieldsForObject( 'Account', new List<String>{ 'Name', 'BillingCity', 'Phone' } );
+sosl.setConditionForObject( 'Account', 'CreatedDate <= TODAY' );
+sosl.setLimitForObject( 'Account', 25 );
+ 
+if( sosl.find( 'Acme' ) ) {  // returns false if there is an error
+   List<Account> accounts = (List<Account>)sosl.getResultsForObject( 'Account' );
+   List<Contact> contacts = (List<Contact>)sosl.getResultsForObject( 'Contact' );
+} else {
+   System.debug( 'SOSL Error: ' + sosl.getError() );
+}
+```
+
 ## Contributors
 
 - Kevin O'Hara
-- {{Your Name Here}}
+- Clint Lee
