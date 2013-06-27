@@ -34,7 +34,7 @@ public class SearchHelper
     private Scope currentScope;
     private Map<String,Map<String,String>> objects;
     private Map<String,List<SObject>> resultMap;
-    private String error;
+    private String error = '';
     
       
     /*
@@ -145,29 +145,31 @@ public class SearchHelper
     **/
     public Boolean find( String searchTerm )
     {
+        Boolean success = false;
         List<List<SObject>> results = null;
         searchTerm = '\'' + searchTerm + '\'';
         String sosl = String.format( 'FIND {0} IN {1} RETURNING {2}', 
                         new List<String>{searchTerm
                                         ,getSearchScope()
                                         ,getSearchObjectsAsString() } );
-        System.debug( sosl );
         try {
             results = search.query( sosl );
+            success = true;
         } catch( System.QueryException e ) {
-            setError( e.getMessage() );
-            return false;
+            error = e.getMessage();
+        }
+        
+        if( results != null ) {
+           resultMap = new Map<String,List<SObject>>();
+
+           for( List<SObject> objList : results ) {
+               if( objList.size() > 0 ) {
+                   resultMap.put( objList.get(0).getSObjectType().getDescribe().getName(), objList );
+               }
+           }
         }
 
-        resultMap = new Map<String,List<SObject>>();
-
-        for( List<SObject> objList : results ) {
-            if( objList.size() > 0 ) {
-                resultMap.put( objList.get(0).getSObjectType().getDescribe().getName(), objList );
-            }
-        }
-
-        return true;
+        return success;
     }
     
     /**
@@ -195,10 +197,7 @@ public class SearchHelper
     **/
     public String getError()
     {
-        if( error == null )
-            return '';
-        else
-            return error;
+        return error;
     }
     
     
@@ -211,19 +210,8 @@ public class SearchHelper
      *
     **/
     private String getSearchScope()
-    {        
-        if( currentScope == SCOPE.ALL_FIELDS )
-            return 'ALL FIELDS';
-        else if( currentScope == SCOPE.NAME_FIELDS )
-            return 'NAME FIELDS';
-        else if( currentScope == SCOPE.EMAIL_FIELDS )
-            return 'EMAIL FIELDS';
-        else if( currentScope == SCOPE.PHONE_FIELDS )
-            return 'PHONE FIELDS';
-        else if( currentScope == SCOPE.SIDEBAR_FIELDS )
-            return 'SIDEBAR FIELDS';
-        else 
-            return '';
+    {       
+        return currentScope.name().replace('_', ' ' );
     }
 
     /**
@@ -245,15 +233,6 @@ public class SearchHelper
         }
 
         return objectString.substring(1);
-    }
-
-    /**
-     *  @param  error  an error message.
-     *
-    **/
-    private void setError( String error )
-    {
-        this.error = error;
     }
 
 }
