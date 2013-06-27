@@ -1,16 +1,27 @@
 /**
- *  The SearchHelper is a convenience utility that makes constructing SOSL
+ *  SearchHelper is a convenience utility that makes constructing SOSL
  *  queries easier and less prone to errors.  It supports searching multiple 
  *  SObjects and includes support for adding Fields, Where clauses, and Limits.
  *  Search results are easily accessed by object.
  *  
  *  EXAMPLE USAGE
- *  
+ *   
  *  SearchHelper sosl = new SearchHelper();
+ *  sosl.setSearchScope( SearchHelper.Scope.ALL_FIELDS );
+ *  sosl.setSearchObjects( new List<String>{ 'Account', 'Contact' } );
+ *  
+ *  // set Account options
+ *  sosl.setFieldsForObject( 'Account', new List<String>{ 'Name', 'BillingCity', 'Phone' } );
+ *  sosl.setConditionForObject( 'Account', 'CreatedDate <= TODAY' );
+ *  sosl.setLimitForObject( 'Account', 25 );
+ *  
+ *  if( sosl.find( 'Acme' ) ) {  // returns false if there is an error
+ *     List<Account> accounts = (List<Account>)sosl.getResultsForObject( 'Account' );
+ *     List<Contact> contacts = (List<Contact>)sosl.getResultsForObject( 'Contact' );
+ *  } else {
+ *     System.debug( 'SOSL Error: ' + sosl.getError() );
+ *  }
  *
- *
- *
- * 
 **/
 
 public class SearchHelper
@@ -21,7 +32,6 @@ public class SearchHelper
                         PHONE_FIELDS, 
                         SIDEBAR_FIELDS }
     private Scope currentScope;
-
     private Map<String,List<SObject>> resultMap;
     private List<String> searchObjects;
     private String error;
@@ -31,7 +41,6 @@ public class SearchHelper
     public SearchHelper() { }
 
     /**
-     *
      *
      *
      *
@@ -85,7 +94,6 @@ public class SearchHelper
      *
      *
      *
-     *
     **/
     public void setFieldsForObject( String objectName, List<String> fields )
     {
@@ -107,7 +115,6 @@ public class SearchHelper
      *
      *
      *
-     *
     **/
     public void setLimitForObject( String objectName, Integer lmt )
     {
@@ -117,7 +124,6 @@ public class SearchHelper
     }
 
     /**
-     *
      *
      *
      *
@@ -164,7 +170,6 @@ public class SearchHelper
      *
      *
      *
-     *
     **/
     public Boolean find( String searchTerm )
     {
@@ -194,7 +199,6 @@ public class SearchHelper
     }
 
     /**
-     *
      *
      *
      *
@@ -238,4 +242,3 @@ public class SearchHelper
     }
 
 }
-
