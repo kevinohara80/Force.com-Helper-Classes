@@ -15,12 +15,12 @@
 
 public class SearchHelper
 {
-    public enum SCOPE { ALL_FIELDS, 
+    public enum Scope { ALL_FIELDS, 
                         NAME_FIELDS, 
                         EMAIL_FIELDS,
                         PHONE_FIELDS, 
                         SIDEBAR_FIELDS }
-    private SCOPE currentScope;
+    private Scope currentScope;
 
     private Map<String,List<SObject>> resultMap;
     private List<String> searchObjects;
@@ -36,7 +36,7 @@ public class SearchHelper
      *
      *
     **/
-    public void setSearchScope( SCOPE scope )
+    public void setSearchScope( Scope scope )
     {
         currentScope = scope;
     }
@@ -46,7 +46,7 @@ public class SearchHelper
      *
      *
     **/
-    public SCOPE getSearchScope()
+    public String getSearchScope()
     {        
         if( currentScope == SCOPE.ALL_FIELDS )
             return 'ALL FIELDS';
